@@ -18,7 +18,7 @@ namespace MiSS_Symulacja
         {
             InitializeComponent();
             Simulation.WahadloEuhler(Simulation.Krok, Simulation.MaxTime, Simulation.G, Simulation.L, Simulation.M, Simulation.K,
-                ref Simulation.Fi0, ref Simulation.Fi1, ref Simulation.Fi2, ref Simulation.Times);
+                ref Simulation.Fi0, ref Simulation.Fi1, ref Simulation.Fi2, ref Simulation.R0, ref Simulation.R1, ref Simulation.R2, ref Simulation.Times);
 
             MyLine = new Line
             {
@@ -35,8 +35,9 @@ namespace MiSS_Symulacja
                 Height = 10,
             };
 
-            MyLine.X2 = Simulation.L * Math.Sin(Simulation.Fi0[0]) + Width / 2;
-            MyLine.Y2 = Simulation.L * Math.Cos(Simulation.Fi0[0]) + Height / 4;
+            double li = Simulation.L + Simulation.R0[0];
+            MyLine.X2 = li * Math.Sin(Simulation.Fi0[0]) + Width / 2;
+            MyLine.Y2 = li * Math.Cos(Simulation.Fi0[0]) + Height / 4;
             Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
             Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
             SimulationPanel.Children.Add(MyLine);
@@ -47,13 +48,14 @@ namespace MiSS_Symulacja
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            MyLine.X2 = Simulation.L * Math.Sin(Simulation.Fi0[Iterator]) + Width / 2;
-            MyLine.Y2 = Simulation.L * Math.Cos(Simulation.Fi0[Iterator]) + Height / 4;
+            double li = Simulation.L + Simulation.R0[Iterator];
+            MyLine.X2 = li * Math.Sin(Simulation.Fi0[Iterator]) + Width / 2;
+            MyLine.Y2 = li * Math.Cos(Simulation.Fi0[Iterator]) + Height / 4;
             Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
             Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
             Iterator++;
-            //System.Threading.Thread.Sleep(1);
-            if (Iterator >= Simulation.Fi0.Count)
+            System.Threading.Thread.Sleep(1);
+            if (Iterator >= Simulation.R0.Count)
             {
                 Timer.Stop();
                 StartButton.IsEnabled = true;
