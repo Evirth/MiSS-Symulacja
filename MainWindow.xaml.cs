@@ -13,12 +13,16 @@ namespace MiSS_Symulacja
         public Ellipse MyEllipse { get; set; }
         public DispatcherTimer Timer { get; set; }
         public int Iterator { get; set; }
+        public int Mode { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            Simulation.WahadloEuhler(Simulation.Krok, Simulation.MaxTime, Simulation.G, Simulation.L, Simulation.M, Simulation.K,
-                ref Simulation.Fi0, ref Simulation.Fi1, ref Simulation.Fi2, ref Simulation.R0, ref Simulation.R1, ref Simulation.R2, ref Simulation.Times);
+            LineSimulation.WahadloEuhler(LineSimulation.Krok, LineSimulation.MaxTime, LineSimulation.G, LineSimulation.L, LineSimulation.M, LineSimulation.K,
+                ref LineSimulation.Fi0, ref LineSimulation.Fi1, ref LineSimulation.Fi2, ref LineSimulation.Times);
+
+            SpringSimulation.WahadloEuhler(SpringSimulation.Krok, SpringSimulation.MaxTime, SpringSimulation.G, SpringSimulation.L, SpringSimulation.M, SpringSimulation.K,
+                ref SpringSimulation.Fi0, ref SpringSimulation.Fi1, ref SpringSimulation.Fi2, ref SpringSimulation.R0, ref SpringSimulation.R1, ref SpringSimulation.R2, ref SpringSimulation.Times);
 
             MyLine = new Line
             {
@@ -34,10 +38,9 @@ namespace MiSS_Symulacja
                 Width = 10,
                 Height = 10,
             };
-
-            double li = Simulation.L + Simulation.R0[0];
-            MyLine.X2 = li * Math.Sin(Simulation.Fi0[0]) + Width / 2;
-            MyLine.Y2 = li * Math.Cos(Simulation.Fi0[0]) + Height / 4;
+            
+            MyLine.X2 = MyLine.X1;
+            MyLine.Y2 = MyLine.Y1 + LineSimulation.L;
             Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
             Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
             SimulationPanel.Children.Add(MyLine);
@@ -48,25 +51,55 @@ namespace MiSS_Symulacja
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            double li = Simulation.L + Simulation.R0[Iterator];
-            MyLine.X2 = li * Math.Sin(Simulation.Fi0[Iterator]) + Width / 2;
-            MyLine.Y2 = li * Math.Cos(Simulation.Fi0[Iterator]) + Height / 4;
-            Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
-            Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
-            Iterator++;
-            System.Threading.Thread.Sleep(1);
-            if (Iterator >= Simulation.R0.Count)
+            //System.Threading.Thread.Sleep(1);
+            switch (Mode)
             {
-                Timer.Stop();
-                StartButton.IsEnabled = true;
+                case 0:
+                    MyLine.X2 = LineSimulation.L * Math.Sin(LineSimulation.Fi0[Iterator]) + Width / 2;
+                    MyLine.Y2 = LineSimulation.L * Math.Cos(LineSimulation.Fi0[Iterator]) + Height / 4;
+                    Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
+                    Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
+                    Iterator++;
+                    if (Iterator >= LineSimulation.Fi0.Count)
+                    {
+                        Timer.Stop();
+                        LineSim.IsEnabled = true;
+                        SpringSim.IsEnabled = true;
+                    }
+                    break;
+                case 1:
+                    double li = SpringSimulation.L + SpringSimulation.R0[Iterator];
+                    MyLine.X2 = li * Math.Sin(SpringSimulation.Fi0[Iterator]) + Width / 2;
+                    MyLine.Y2 = li * Math.Cos(SpringSimulation.Fi0[Iterator]) + Height / 4;
+                    Canvas.SetLeft(MyEllipse, MyLine.X2 - 5);
+                    Canvas.SetTop(MyEllipse, MyLine.Y2 - 5);
+                    Iterator++;
+                    if (Iterator >= SpringSimulation.R0.Count)
+                    {
+                        Timer.Stop();
+                        LineSim.IsEnabled = true;
+                        SpringSim.IsEnabled = true;
+                    }
+                    break;
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void SpringSimButton_Click(object sender, RoutedEventArgs e)
         {
             Iterator = 0;
             Timer.Start();
-            StartButton.IsEnabled = false;
+            LineSim.IsEnabled = false;
+            SpringSim.IsEnabled = false;
+            Mode = 1;
+        }
+
+        private void LineSimButton_Click(object sender, RoutedEventArgs e)
+        {
+            Iterator = 0;
+            Timer.Start();
+            LineSim.IsEnabled = false;
+            SpringSim.IsEnabled = false;
+            Mode = 0;
         }
     }
 }

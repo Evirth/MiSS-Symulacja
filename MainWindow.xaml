@@ -8,6 +8,7 @@
         Title="MiSS Symulacja" Height="500" Width="700" ResizeMode="CanMinimize">
     <Grid x:Name="MainPanel">
         <Canvas x:Name="SimulationPanel" Margin="0"/>
-        <Button x:Name="StartButton" Content="Symulacja" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Click="StartButton_Click" />
+        <Button x:Name="LineSim" Content="Whadlo na lince" Width="130" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,140,10" Click="LineSimButton_Click" />
+        <Button x:Name="SpringSim" Content="Wahadlo na sprężynie" Width="130" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="140,0,0,10" Click="SpringSimButton_Click" />
     </Grid>
 </Window>
