@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MiSS_Symulacja"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
+        Title="MiSS Symulacja" Height="500" Width="700" ResizeMode="CanMinimize">
+    <Grid x:Name="MainPanel">
+        <Canvas x:Name="SimulationPanel" Margin="0"/>
+        <Button x:Name="StartButton" Content="Symulacja" Width="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,10" Click="StartButton_Click" />
     </Grid>
 </Window>
